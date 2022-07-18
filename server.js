@@ -32,7 +32,7 @@ User.hasMany(Order, { foreignKey: 'userId' });
 Order.belongsTo(User);
 
 //Database synced with models' relations
-db.sync()
+db.sync(/* { force: true } */)
   .then(() => console.log('Database synced'))
   .catch(err => console.log(err));
 

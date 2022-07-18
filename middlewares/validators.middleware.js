@@ -35,9 +35,57 @@ const createUserValidators = [
 ];
 
 const createRestaurantValidators = [
-  
-]
+  body('name').notEmpty().withMessage('Name cannot be empty'),
+  body('address').notEmpty().withMessage('Address cannot be empty'),
+  body('rating')
+    .notEmpty()
+    .withMessage('Name cannot be empty')
+    .isInt()
+    .withMessage('Rating must be a integer value')
+    .custom(val => val > 0)
+    .withMessage(
+      'The rating must be a number between 1 and 10, with 1 being the lowest rating and 10 being the highest.'
+    )
+    .custom(val => val <= 10)
+    .withMessage(
+      'The rating must be a number between 1 and 10, with 1 being the lowest rating and 10 being the highest.'
+    ),
+  checkResult,
+];
+
+const createMealValidators = [
+  body('name').notEmpty().withMessage('Name cannot be empty'),
+  body('price')
+    .notEmpty()
+    .withMessage('Name cannot be empty')
+    .isInt()
+    .withMessage('Price must be a integer value')
+    .custom(val => val >= 0)
+    .withMessage('Price cannot be a negative value'),
+  checkResult,
+];
+
+const createOrderValidators = [
+  body('quantity')
+    .notEmpty()
+    .withMessage('Quantity cannot be empty')
+    .isInt()
+    .withMessage('Quantity must be a integer value')
+    .custom(val => val > 0)
+    .withMessage('Quantity cannot be a negative value'),
+  body('mealId')
+    .notEmpty()
+    .withMessage('MealId cannot be empty')
+    .isInt()
+    .withMessage('MealId must be a integer value')
+    .custom(val => val > 0)
+    .withMessage('MealId cannot be a negative value'),
+  checkResult,
+];
 
 module.exports = {
   createUserValidators,
+  createRestaurantValidators,
+  createMealValidators,
+  createOrderValidators,
 };

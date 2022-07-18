@@ -17,7 +17,7 @@ const Restaurant = db.define('restaurant', {
     allowNull: false,
   },
   rating: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   status: {

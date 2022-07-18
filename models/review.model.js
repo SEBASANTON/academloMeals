@@ -24,5 +24,9 @@ const Review = db.define('review', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'active',
+  },
 });
 module.exports = { Review };

@@ -54,4 +54,39 @@ const protectUser = catchAsync(async (req, res, next) => {
   next();
 });
 
-module.exports = { protectSesssion, protectUser };
+const protectReview = catchAsync(async (req, res, next) => {
+  const { sessionUser, review } = req;
+
+  if (sessionUser.id !== review.userId) {
+    return next(new AppError('You do not own this review', 403));
+  }
+
+  next();
+});
+
+const protectAdmin = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+
+  if (sessionUser.role !== 'admin') {
+    return next(new AppError('You are not admin', 403));
+  }
+  next();
+});
+
+const protectOrder = catchAsync(async (req, res, next) => {
+  const { sessionUser, order } = req;
+
+  if (sessionUser.id !== order.userId) {
+    return next(new AppError('You do not own this account', 403));
+  }
+
+  next();
+});
+
+module.exports = {
+  protectSesssion,
+  protectUser,
+  protectReview,
+  protectAdmin,
+  protectOrder,
+};

@@ -9,6 +9,9 @@ const { Order } = require('../models/order.model');
 //Utils
 const { catchAsync } = require('../utils/catchAsync');
 const { AppError } = require('../utils/appError');
+const { Restaurant } = require('../models/restaurant.model');
+const { Op } = require('sequelize');
+const { Meal } = require('../models/meal.model');
 
 dotenv.config({ path: './config.env' });
 
@@ -25,7 +28,7 @@ const getAllUsers = catchAsync(async (req, res, next) => {
 });
 
 const createUser = catchAsync(async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, status } = req.body;
 
   const salt = await bcrypt.genSalt(12);
   const hashPassword = await bcrypt.hash(password, salt);
@@ -99,14 +102,38 @@ const deleteUser = catchAsync(async (req, res, next) => {
 });
 
 const getOrder = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+
+  const orders = await Order.findAll({
+    attributes: ['id', 'userId', 'quantity', 'totalPrice', 'status'],
+    include: [
+      {
+        model: Meal,
+        attributes: ['id', 'name', 'price'],
+        include: {
+          model: Restaurant,
+          attributes: ['id', 'name', 'address', 'rating', 'status'],
+        },
+      },
+    ],
+    where: {
+      userId: sessionUser.id,
+      status: { [Op.ne]: 'cancelled' },
+    },
+  });
+
   res.status(200).json({
     status: 'success',
+    orders,
   });
 });
 
 const getOrderById = catchAsync(async (req, res, next) => {
+  const { order } = req;
+
   res.status(200).json({
     status: 'success',
+    order,
   });
 });
 
